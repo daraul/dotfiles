@@ -54,7 +54,8 @@ bindsym $mod+ctrl+d exec rofi -show run -eh 1 -bw 0 -bc "$dark-overlay" -bg "$da
 # Rofi search .desktop files
 bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu='rofi -dmenu -show run -eh 1 -bw 0 -bc "$dark-overlay" -bg "$dark" -fg "$light" -hlfg "$light" -hlbg "$dark-overlay" -font "Roboto Regular $font-size" -sidebar-mode -fullscreen -padding 400 -opacity "55"'
 
-bindsym $mod+Shift+d exec rofi -show window -eh 1 -bw 0 -bc "$dark-overlay" -bg "$dark" -fg "$light" -hlfg "$light" -hlbg "$dark-overlay" -font "Roboto Regular $font-size" -sidebar-mode -fullscreen -padding 400 -opacity "55" # Go to open window
+# Go to open window
+bindsym $mod+Shift+d exec rofi -show window -eh 1 -bw 0 -bc "$dark-overlay" -bg "$dark" -fg "$light" -hlfg "$light" -hlbg "$dark-overlay" -font "Roboto Regular $font-size" -sidebar-mode -fullscreen -padding 400 -opacity "55"
 
 bindsym $mod+p exec rofi_keepass Documents/Passwords/daraul.kdbx
 
@@ -118,7 +119,7 @@ bindsym Print exec maim ~/Pictures/screenshot_$(date +%F-%T).png
 bindsym Shift+Print exec maim -s ~/Pictures/screenshot_$(date +%F-%T).png
 
 # set i3lock
-bindsym $mod+shift+x exec i3lock
+bindsym $mod+shift+x exec i3lock --color "$dark"
 
 
 # setup monitors
@@ -207,15 +208,21 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-# Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+# Global Audio controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% && pkill -RTMIN+1 i3blocks #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% && pkill -RTMIN+1 i3blocks #decrease sound volume
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle && pkill -RTMIN+1 i3blocks # mute sound
 
-# bindsym XF86AudioPlay exec playerctl play-pause
-# bindsym XF86AudioStop exec playerctl stop
-# bindsym XF86AudioNext exec playerctl next
-# bindsym XF86AudioPrev exec playerctl previous
+
+# Local audio controls
+bindsym Shift+XF86AudioRaiseVolume exec playerctl volume 0.2+ && pkill -RTMIN+1 i3blocks #increase player sound volume
+bindsym Shift+XF86AudioLowerVolume exec playerctl volume 0.2- && pkill -RTMIN+1 i3blocks #decrease player sound volume
+bindsym Shift+XF86AudioMute exec playerctl volume 0 && pkill -RTMIN+1 # mute player sound
+
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioStop exec playerctl stop
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
 
 
 # Miscellaneous Bindings
@@ -224,6 +231,10 @@ bindsym XF86Calculator exec gnome-calculator
 # Mouse bindings
 bindsym --release button2 kill
 
+# Show caps and num lock keys
+bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
+bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
+
 # window colors
 # client                border          background      text            indicator
 client.focused          $dark           $dark           $light          $highlight
@@ -231,10 +242,11 @@ client.unfocused        $dark           $dark           $light-overlay  $highlig
 client.focused_inactive $dark           $dark           $dark-overlay   $highlight
 client.urgent           $highlight      $highlight      $light          $highlight
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
+# Start i3bar to display a workspace bar (plus the system information i3status finds out, if available)
+# horizontal monitor bar
 bar {
 	position top
+	output $left-screen
 
         status_command i3blocks -c ~/.config/i3/i3blocks.conf
         tray_output primary
@@ -249,10 +261,30 @@ bar {
         }
 }
 
+# vertical monitor bar
+bar {
+	position top
+	output $right-screen
+
+        status_command i3blocks -c ~/.config/i3/i3blocks-small.conf
+        tray_output primary
+
+        colors {
+                background $dark
+                separator  $dark-overlay
+                #                   border          background        text
+                focused_workspace   $light-overlay  $light            $dark
+                inactive_workspace  $dark           $dark-overlay     $dark
+                urgent_workspace    $highlight      $highlight        $light
+        }
+}
+
+
 exec_always xrandr --output VGA-0 --mode 1920x1080 --pos 1920x0 --rotate left --output LVDS --off --output DIN --off --output HDMI-0 --primary --mode 1920x1080 --pos 0x544 --rotate normal
 exec_always feh --bg-fill --no-xinerama /home/daraul/Pictures/Wallpapers/central_park.jpg
 exec syncthing
 exec syncthing-gtk
+# exec_always compton -f
 
 # window settings
 for_window [class="Syncthing GTK"] floating enable
