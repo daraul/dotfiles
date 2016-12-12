@@ -115,8 +115,8 @@ bindsym $mod+a focus parent
 #bindsym $mod+d focus child
 
 # screenshots shortcuts
-bindsym Print exec maim ~/Pictures/screenshot_$(date +%F-%T).png
-bindsym Shift+Print exec maim -s ~/Pictures/screenshot_$(date +%F-%T).png
+bindsym --release Print exec scrot -e 'xclip -selection clipboard -t image/png -i $f && mv $f ~/Pictures/'
+bindsym --release Shift+Print exec scrot -s -e 'xclip -selection clipboard -t image/png -i $f && mv $f ~/Pictures/'
 
 # set i3lock
 bindsym $mod+shift+x exec i3lock --color "$dark"
@@ -227,9 +227,6 @@ bindsym XF86AudioPrev exec playerctl previous
 
 # Miscellaneous Bindings
 bindsym XF86Calculator exec gnome-calculator
-
-# Mouse bindings
-bindsym --release button2 kill
 
 # Show caps and num lock keys
 bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
