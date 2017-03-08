@@ -236,8 +236,6 @@ bindsym XF86Calculator exec gnome-calculator
 bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
 bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
 
-bindsym $mod+x exec ~/.i3/i3-hud-menu.py
-
 # window colors
 # client                border          background      text            indicator
 client.focused          $dark           $dark           $light          $highlight
@@ -286,7 +284,6 @@ exec_always xrandr --output VGA-0 --mode 1920x1080 --pos 1920x0 --rotate left --
 exec_always feh --bg-fill --no-xinerama /home/daraul/Pictures/Wallpapers/DN8FfEb.png
 exec syncthing
 exec syncthing-gtk
-exec_always ~/.config/i3/i3-appmenu-service.py
 # exec_always compton -f
 
 # window settings
