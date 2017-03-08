@@ -174,6 +174,10 @@ bindsym $mod+Shift+8 move container to workspace $workspace8
 bindsym $mod+Shift+9 move container to workspace $workspace9
 bindsym $mod+Shift+0 move container to workspace $workspace10
 
+#move window to scratchpad
+bindsym $mod+Shift+Tab move scratchpad
+bindsym $mod+Tab scratchpad show
+
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
@@ -219,10 +223,10 @@ bindsym Shift+XF86AudioRaiseVolume exec playerctl volume 0.2+ && pkill -RTMIN+1 
 bindsym Shift+XF86AudioLowerVolume exec playerctl volume 0.2- && pkill -RTMIN+1 i3blocks #decrease player sound volume
 bindsym Shift+XF86AudioMute exec playerctl volume 0 && pkill -RTMIN+1 # mute player sound
 
-bindsym XF86AudioPlay exec playerctl play-pause
-bindsym XF86AudioStop exec playerctl stop
-bindsym XF86AudioNext exec playerctl next
-bindsym XF86AudioPrev exec playerctl previous
+bindsym XF86AudioPlay exec playerctl play-pause && pkill -RTMIN+10 i3blocks
+bindsym XF86AudioStop exec playerctl stop && pkill -RTMIN+10 i3blocks
+bindsym XF86AudioNext exec playerctl next && pkill -RTMIN+10 i3blocks
+bindsym XF86AudioPrev exec playerctl previous && pkill -RTMIN+10 i3blocks
 
 
 # Miscellaneous Bindings
@@ -231,6 +235,8 @@ bindsym XF86Calculator exec gnome-calculator
 # Show caps and num lock keys
 bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
 bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
+
+bindsym $mod+x exec ~/.i3/i3-hud-menu.py
 
 # window colors
 # client                border          background      text            indicator
@@ -276,12 +282,25 @@ bar {
         }
 }
 
-
 exec_always xrandr --output VGA-0 --mode 1920x1080 --pos 1920x0 --rotate left --output LVDS --off --output DIN --off --output HDMI-0 --primary --mode 1920x1080 --pos 0x544 --rotate normal
-exec_always feh --bg-fill --no-xinerama /home/daraul/Pictures/Wallpapers/central_park.jpg
+exec_always feh --bg-fill --no-xinerama /home/daraul/Pictures/Wallpapers/DN8FfEb.png
 exec syncthing
 exec syncthing-gtk
+exec_always ~/.config/i3/i3-appmenu-service.py
 # exec_always compton -f
 
 # window settings
 for_window [class="Syncthing GTK"] floating enable
+
+# steam specific, https://github.com/ValveSoftware/steam-for-linux/issues/1040
+# https://github.com/ValveSoftware/steam-for-linux/issues/1040
+for_window [class="^Steam$" title="^Friends$"] floating enable
+for_window [class="^Steam$" title="Steam - News"] floating enable
+for_window [class="^Steam$" title=".* - Chat"] floating enable
+for_window [class="^Steam$" title="^Settings$"] floating enable
+for_window [class="^Steam$" title=".* - event started"] floating enable
+for_window [class="^Steam$" title=".* CD key"] floating enable
+for_window [class="^Steam$" title="^Steam - Self Updater$"] floating enable
+for_window [class="^Steam$" title="^Screenshot Uploader$"] floating enable
+for_window [class="^Steam$" title="^Steam Guard - Computer Authorization Required$"] floating enable
+for_window [title="^Steam Keyboard$"] floating enable
