@@ -121,7 +121,6 @@ bindsym --release Shift+Print exec scrot -s -e 'xclip -selection clipboard -t im
 # set i3lock
 bindsym $mod+shift+x exec i3lock --color "$dark"
 
-
 # setup monitors
 set $left-screen HDMI-0
 set $right-screen VGA-0
@@ -137,7 +136,6 @@ set $workspace7 "7"
 set $workspace8 "8"
 set $workspace9 "9"
 set $workspace10 "10"
-
 
 workspace $workspace1 output $left-screen
 workspace $workspace2 output $right-screen
@@ -213,10 +211,9 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # Global Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% && pkill -RTMIN+1 i3blocks #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% && pkill -RTMIN+1 i3blocks #decrease sound volume
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume $(pacmd list-sinks | grep "index:\|name:\|volume: front\|muted:" | grep '*' | grep -oG '[0-9]*$') +5% && pkill -RTMIN+1 i3blocks #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume $(pacmd list-sinks | grep "index:\|name:\|volume: front\|muted:" | grep '*' | grep -oG '[0-9]*$') -5% && pkill -RTMIN+1 i3blocks #decrease sound volume
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle && pkill -RTMIN+1 i3blocks # mute sound
-
 
 # Local audio controls
 bindsym Shift+XF86AudioRaiseVolume exec playerctl volume 0.2+ && pkill -RTMIN+1 i3blocks #increase player sound volume
@@ -228,6 +225,9 @@ bindsym XF86AudioStop exec playerctl stop && pkill -RTMIN+10 i3blocks
 bindsym XF86AudioNext exec playerctl next && pkill -RTMIN+10 i3blocks
 bindsym XF86AudioPrev exec playerctl previous && pkill -RTMIN+10 i3blocks
 
+# bindsym $mod+x exec ~/.i3/i3-hud-menu.py
+# bindsym $mod+x exec gnome-calculator
+# bindsym $mod+x exec dbus-send --system --print-reply --dest="org.freedesktop.ConsoleKit" /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Stop
 
 # Miscellaneous Bindings
 bindsym XF86Calculator exec gnome-calculator
@@ -283,11 +283,8 @@ bar {
 exec_always xrandr --output VGA-0 --mode 1920x1080 --pos 1920x0 --rotate left --output LVDS --off --output DIN --off --output HDMI-0 --primary --mode 1920x1080 --pos 0x544 --rotate normal
 exec_always feh --bg-fill --no-xinerama /home/daraul/Pictures/Wallpapers/DN8FfEb.png
 exec syncthing
-exec syncthing-gtk
+exec ~/.i3/i3-appmenu-service.py
 # exec_always compton -f
-
-# window settings
-for_window [class="Syncthing GTK"] floating enable
 
 # steam specific, https://github.com/ValveSoftware/steam-for-linux/issues/1040
 # https://github.com/ValveSoftware/steam-for-linux/issues/1040
